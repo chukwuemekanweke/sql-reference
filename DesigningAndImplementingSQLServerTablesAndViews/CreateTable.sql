@@ -16,8 +16,14 @@ CREATE TABLE Orders.OrderTracking(
     Quantity SMALLINT NOT NULL,
     Discount NUMERIC(4,2) NOT NULL,
     IsExpedited bit NOT NULL,
-    TotalPrice AS (Quantity * UnitPrice * (1.0-Discount)), --PERSISTED
+    TotalPrice AS (Quantity * UnitPrice * (1.0-Discount)), --PERSISTED 
 )
 On BobsData
 WITH (DATA_COMPRESSION = PAGE)
 Go
+
+ALTER TABLE Orders.OrderTracking
+ADD CONSTRAINT PK_OrderTracking_OrderId
+    PRIMARY KEY (OrderId)
+        ON [BobsData]
+GO

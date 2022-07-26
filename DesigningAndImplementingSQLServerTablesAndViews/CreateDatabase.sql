@@ -1,6 +1,7 @@
 -- Create database for Bobs Shoes
 USE master
 GO
+
 CREATE DATABASE BobsShoes
 GO
 
@@ -12,8 +13,9 @@ EXEC SP_HELPFILE;
 GO
 
 -- Create schema for Bobs Orders
-CREATE SCHEMA Orders AUTHORIZATION dbo;
-Go
+CREATE SCHEMA Orders 
+       AUTHORIZATION dbo;
+GO
 
 -- Create new filegrups for data and logs
 ALTER DATABASE BobsShoes    

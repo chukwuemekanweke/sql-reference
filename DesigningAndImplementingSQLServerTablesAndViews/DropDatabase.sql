@@ -1,3 +1,8 @@
+USE master
+
+DROP SCHEMA Orders
+GO
+
 USE master;
 GO
 
