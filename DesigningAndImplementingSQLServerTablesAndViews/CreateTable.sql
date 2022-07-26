@@ -1,10 +1,14 @@
 USE BobsShoes
 GO
 
-DROP TABLE IF EXISTS Customers, Stock, Orders, OrderItems
+DROP TABLE IF EXISTS Customers, Stock, Orders, OrderItems, Salutations
+
+CREATE TABLE Salutations(
+    SalutationID INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Salutations_SalutationID PRIMARY KEY,
+    Salutation VARCHAR(5) NOT NULL,
+);
 
 CREATE TABLE Customers(
-
     CustID INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Customers_CustID PRIMARY KEY,
     CustName NVARCHAR(200) NOT NULL,
     CustStreet NVARCHAR(100) NOT NULL,
@@ -13,6 +17,9 @@ CREATE TABLE Customers(
     CustCountry NVARCHAR(100) NOT NULL,
     CustPostalCode NVARCHAR(20) NOT NULL,
     CustSalutation CHAR(5) NOT NULL,
+    SalutationID INT NOT NULL
+        CONSTRAINT FK_Customers_SalutationID_Salutations_SalutationID
+            FOREIGN KEY REFERENCES Salutations (SalutationID), 
 );
 
 CREATE TABLE Stock(
