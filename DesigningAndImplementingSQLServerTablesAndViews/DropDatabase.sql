@@ -1,6 +1,6 @@
 USE master
 
-DROP SCHEMA Orders
+DROP SCHEMA orders
 GO
 
 USE master;

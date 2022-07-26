@@ -13,7 +13,7 @@ EXEC SP_HELPFILE;
 GO
 
 -- Create schema for Bobs Orders
-CREATE SCHEMA Orders 
+CREATE SCHEMA orders 
        AUTHORIZATION dbo;
 GO
 
