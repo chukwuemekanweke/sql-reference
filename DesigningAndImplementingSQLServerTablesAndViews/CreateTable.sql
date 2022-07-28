@@ -4,12 +4,18 @@ GO
 DROP TABLE IF EXISTS Customers, Stock, Orders, OrderItems, Salutations
 
 CREATE TABLE Salutations(
-    SalutationID INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Salutations_SalutationID PRIMARY KEY,
-    Salutation VARCHAR(5) NOT NULL,
+    SalutationID INT IDENTITY(1,1) NOT NULL 
+        CONSTRAINT PK_Salutations_SalutationID 
+            PRIMARY KEY CLUSTERED,
+    Salutation VARCHAR(5) NOT NULL
+        CONSTRAINT UQ_Salutations_Salutation
+            UNIQUE NONCLUSTERED
+        CONSTRAINT CK_Salutations_Salutation_must_not_be_empty CHECK (Salutation <> ''),
 );
 
 CREATE TABLE Customers(
-    CustID INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Customers_CustID PRIMARY KEY,
+    CustID INT IDENTITY(1,1) NOT NULL 
+        CONSTRAINT PK_Customers_CustID PRIMARY KEY CLUSTERED, 
     CustName NVARCHAR(200) NOT NULL,
     CustStreet NVARCHAR(100) NOT NULL,
     CustCity NVARCHAR(100) NOT NULL,
@@ -23,17 +29,22 @@ CREATE TABLE Customers(
 );
 
 CREATE TABLE Stock(
-    StockID INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Stock_StockID PRIMARY KEY,
+    StockID INT IDENTITY(1,1) NOT NULL 
+        CONSTRAINT PK_Stock_StockID PRIMARY KEY CLUSTERED,
     StockSKU CHAR(8) NOT NULL,
     StockSize VARCHAR(10) NOT NULL,
     StockName VARCHAR(100) NOT NULL,
     StockPrice NUMERIC(7,2) NOT NULL,
+        CONSTRAINT UQ_Stock_StockSKU_StockSize
+            UNIQUE NONCLUSTERED (StockSKU, StockSize),
+        CONSTRAINT CK_Stock_SKU_cannot_equal_description CHECK (StockSKU <> StockName)
     -- CONSTRAINT Pk_Stock_StockSKU_StockSize PRIMARY KEY (StockSKU, StockSize)
 );
 
 CREATE TABLE Orders(
-    OrderID INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Orders_OrderID PRIMARY KEY,
-    OrderDate DATE NOT NULL,
+    OrderID INT IDENTITY(1,1) NOT NULL 
+        CONSTRAINT PK_Orders_OrderID PRIMARY KEY CLUSTERED,
+    OrderDate DATE NOT NULL ,
     OrderRequestedDate DATE NOT NULL,
     OrderDeliveryDate DATETIME2(0) NULL,
     CustID INT NOT NULL
@@ -44,7 +55,8 @@ CREATE TABLE Orders(
 
 
 CREATE TABLE OrderItems(
-   OrderItemID INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_OrderItems_OrderItemID PRIMARY KEY,
+   OrderItemID INT IDENTITY(1,1) NOT NULL 
+    CONSTRAINT PK_OrderItems_OrderItemID PRIMARY KEY CLUSTERED,
    OrderID INT NOT NULL 
         CONSTRAINT FK_OrderItems_OrderID_Orders_OrderID
                     FOREIGN KEY REFERENCES Orders (OrderID),
@@ -52,7 +64,19 @@ CREATE TABLE OrderItems(
         CONSTRAINT FK_OrderItems_OrderID_Stock_StockID
                 FOREIGN KEY REFERENCES Stock (StockID),
    Quantity SMALLINT NOT NULL,
-   Discount NUMERIC(4,2) NOT NULL
+   Discount NUMERIC(4,2) NOT NULL,
+    CONSTRAINT UQ_OrderItems_OrderID_StockID
+            UNIQUE NONCLUSTERED (OrderID, StockID)
 );
+
+ALTER TABLE Orders
+    ADD CONSTRAINT DF_Orders_orderDate_getDate
+        DEFAULT GETDATE() FOR OrderDate
+
+ALTER TABLE Orders
+    ADD CONSTRAINT DF_Orders_OrderIsExpedited_FALSE
+        DEFAULT 0 FOR OrderIsExpedited
+
+
 RETURN;
 
